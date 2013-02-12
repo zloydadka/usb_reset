@@ -1,9 +1,8 @@
 #!/bin/sh
-USB_RESET_CMD="echo" # change to usb reset utility
+USB_RESET_CMD="USB_RESET_CMD_PATH" # usb reset utility
 
 KEYBOARD_DEVICES=$(grep "01" -rls /sys/bus/usb/devices/**/bInterfaceProtocol | sed -e 's/bInterfaceProtocol//g')
 
-echo $KEYBOARD_DEVICES
 for line in $KEYBOARD_DEVICES; do
 	dev_name=$(basename $(find $line -regextype sed -regex ".*[0-9]\{4\}\.*"))
 	vendor=${dev_name:5:4}
