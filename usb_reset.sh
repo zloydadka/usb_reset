@@ -1,8 +1,13 @@
 #!/bin/sh
-
-DEVICE="046e:6000"
 USB_RESET_CMD="echo" # change to usb reset utility
 
-usb_dev=$(lsusb -d $DEVICE)
+KEYBOARD_DEVICES=$(grep "01" -rls /sys/bus/usb/devices/**/bInterfaceProtocol | sed -e 's/bInterfaceProtocol//g')
 
-$USB_RESET_CMD /dev/bus/usb/${usb_dev:4:3}/${usb_dev:15:3}
+echo $KEYBOARD_DEVICES
+for line in $KEYBOARD_DEVICES; do
+	dev_name=$(basename $(find $line -regextype sed -regex ".*[0-9]\{4\}\.*"))
+	vendor=${dev_name:5:4}
+	product=${dev_name:10:4}
+	usb_dev=$(lsusb -d $vendor:$product)
+	$USB_RESET_CMD /dev/bus/usb/${usb_dev:4:3}/${usb_dev:15:3}
+done
